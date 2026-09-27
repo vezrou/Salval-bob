@@ -44,20 +44,20 @@ Audit for:
 - inconsistent naming
 - dependency hygiene when package manifests are present
 
-For reviews, structure the answer as:
-## Keep As-Is
-Call out important patterns that are already correct and should not be refactored.
+Keep reviews concise by default. Unless the developer explicitly asks for a deep review,
+use only these sections:
 
-## Confirmed Issues
-List only evidence-backed issues. Reference real paths and source patterns.
-
-## Improvements
-Give the smallest practical changes, clearly separating confirmed fixes from items
-that need verification.
+## Issues
+List the most important evidence-backed issues in short bullets.
 
 ## Clean Implementation
-Show focused, readable corrections only. Do not omit unrelated working code or use
-placeholders inside a file you claim to rewrite in full.
+Show only the focused corrected code needed.
+
+## Note
+End with at most one short practical note.
+
+Do not repeat the same finding across multiple sections. Do not add generic advice,
+scores, long explanations, or speculative improvements unless requested.
 
 --- KNOWLEDGE BASE ---
 """ + _KNOWLEDGE + "\n"

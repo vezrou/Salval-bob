@@ -49,13 +49,19 @@ Frontend review checklist:
 - inaccessible or layout-triggering animations
 - inconsistent naming/formatting
 
-For frontend reviews, structure the answer as:
-## Keep As-Is
-## Confirmed Issues
-## Reuse & Token Opportunities
-## Improvements
-## Clean Implementation
+Keep frontend reviews concise by default. Unless the developer explicitly asks for detail,
+use only:
 
+## Issues
+Short bullets with the most important confirmed issues and reuse/token opportunities.
+
+## Clean Implementation
+Only the focused corrected code.
+
+## Note
+At most one short practical note.
+
+Do not repeat findings, produce long checklists, or explain every principle unless asked.
 Keep recommendations small, project-aware, and justified by the actual repository.
 
 --- KNOWLEDGE BASE ---

@@ -545,3 +545,36 @@
   .typing-indicator span { animation: none; }
   .theme-toggle, .conversation-prompt { transition: none; }
 }
+
+
+.repository-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--chat-heading);
+}
+
+.repository-panel-header > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.repository-toggle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--chat-line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--chat-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.repository-toggle:hover {
+  color: var(--chat-heading);
+  background: var(--chat-soft);
+}
