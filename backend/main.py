@@ -77,10 +77,22 @@ def analyze_repo(req: AnalyzeRequest):
         raise HTTPException(status_code=400, detail=str(e))
     except httpx.HTTPStatusError as e:
         status_code = e.response.status_code
+        if status_code == 429 or (status_code == 403 and (
+            e.response.headers.get("x-ratelimit-remaining") == "0"
+            or "retry-after" in e.response.headers
+            or "rate limit" in e.response.text.lower()
+        )):
+            raise HTTPException(status_code=429, detail=(
+                "GitHub's request limit has been reached. Configure GITHUB_TOKEN in the backend "
+                "environment (Railway Variables or backend/.env), then restart/redeploy. "
+                "If a token is already configured, wait for GitHub's limit to reset before retrying."
+            ))
+        if status_code == 403:
+            raise HTTPException(status_code=403, detail="GitHub denied access. Check the token's repository permissions.")
         if status_code == 404:
             raise HTTPException(status_code=404, detail="Repository not found. Check the URL and make sure it is public.")
         if status_code == 401:
-            raise HTTPException(status_code=401, detail="Repository is private. Provide a GitHub personal access token.")
+            raise HTTPException(status_code=401, detail="GitHub rejected the token. Check that GITHUB_TOKEN is valid and has not expired.")
         raise HTTPException(status_code=502, detail=f"GitHub API error: {e}")
     except httpx.RequestError:
         raise HTTPException(status_code=502, detail="GitHub could not be reached. Please retry.")

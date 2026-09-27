@@ -1,4 +1,5 @@
 import json
+import httpx
 import unittest
 from unittest.mock import patch
 
@@ -82,6 +83,22 @@ class ProjectFlowTests(unittest.TestCase):
             files = fetch_repo('https://github.com/acme/ui')
         self.assertEqual(sum(f['scope'] == 'backend' for f in files), 12)
         self.assertEqual(files[0]['path'], 'frontend/App.tsx')
+
+    def test_github_rate_limit_has_actionable_message(self):
+        request = httpx.Request('GET', 'https://api.github.com/repos/acme/ui')
+        for status, headers, body, expected in [
+            (403, {'x-ratelimit-remaining': '0'}, '', 429),
+            (403, {}, 'API rate limit exceeded', 429),
+            (429, {}, '', 429),
+            (403, {}, 'Forbidden', 403),
+        ]:
+            response = httpx.Response(status, headers=headers, text=body, request=request)
+            error = httpx.HTTPStatusError('GitHub failure', request=request, response=response)
+            with self.subTest(status=status, body=body), patch('main.fetch_repo', side_effect=error):
+                result = self.client.post('/analyze', json={'repo_url': 'https://github.com/acme/ui'})
+                self.assertEqual(result.status_code, expected)
+                if expected == 429:
+                    self.assertIn('GITHUB_TOKEN', result.json()['detail'])
 
     def test_invalid_snapshot_is_an_error(self):
         for raw in ['not json', '{}', '{"stack": null}', json.dumps({**SNAPSHOT, 'hooks': 'useAuth'})]:

@@ -108,6 +108,11 @@ def _fetch_file(owner: str, repo: str, path: str, headers: dict, branch: str) ->
         data = response.json()
         encoded = data.get("content", "")
         return base64.b64decode(encoded).decode("utf-8", errors="replace")
+    except httpx.HTTPStatusError as e:
+        # Do not silently turn quota/auth failures into a successful partial scan.
+        if e.response.status_code in (401, 403, 429):
+            raise
+        return None
     except Exception:
         return None
 
