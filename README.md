@@ -51,3 +51,7 @@ npm run build
 ```
 
 Tests mock GitHub/model responses and cover repository context, agent routing, failed analysis, session reuse and UI request ordering. They do not validate live model output.
+
+## Screenshots
+
+See [screenshots.md](screenshots.md) for screenshots and visual notes for the project.
