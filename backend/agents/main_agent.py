@@ -22,7 +22,7 @@ def classify(command: str) -> str:
     Use the model to classify the command into one of the five subagent categories.
     Falls back to keyword matching if the LLM call fails.
     """
-    from agents.subagents.llm_client import generate
+    from agents.subagents.llm_client import generate, ModelRequestError
 
     system_prompt = (
         "You are a request classifier for a developer assistant. "
@@ -42,6 +42,8 @@ def classify(command: str) -> str:
         label = generate(system_prompt, command).strip().lower()
         if label in _subagents:
             return label
+    except ModelRequestError:
+        raise
     except Exception:
         pass
 
